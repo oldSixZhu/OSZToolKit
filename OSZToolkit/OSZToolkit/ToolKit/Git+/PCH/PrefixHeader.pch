@@ -1,0 +1,19 @@
+//
+//  PrefixHeader.pch
+//  网易彩票
+//
+//  Created by oldSix_Zhu on 16/7/16.
+//  Copyright © 2016年 oldSix_Zhu. All rights reserved.
+//
+
+#ifdef __OBJC__
+
+
+#import "UIView+OO.h"
+
+#define OScreenWidth    [UIScreen mainScreen].bounds.size.width
+#define OScreenHeight   [UIScreen mainScreen].bounds.size.height
+#define OScreenBounds     [UIScreen mainScreen].bounds
+
+
+#endif
