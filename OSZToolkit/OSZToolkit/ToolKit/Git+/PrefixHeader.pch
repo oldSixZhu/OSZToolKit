@@ -9,7 +9,14 @@
 #ifdef __OBJC__
 
 
-#import "UIView+OO.h"
+#ifdef DEBUG
+//#define NSLog(...) NSLog(__VA_ARGS__)
+#define NSLog(fmt,...) NSLog((@"%s [Line %d]" fmt),__PRETTY_FUNCTION__,__LINE__,##__VA_ARGS__)
+#else
+#define NSLog(...)
+
+#endif
+
 
 #define OScreenWidth    [UIScreen mainScreen].bounds.size.width
 #define OScreenHeight   [UIScreen mainScreen].bounds.size.height

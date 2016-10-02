@@ -1,8 +1,10 @@
+/*
 1 打开服务器   sudo apachectl -k restart
 
 2 设置cocoapods   cd "拖入工程文件
                 pod init  "创建pods
                 pod search "afn
+                vim Podfile "打印出文件列表  用wq保存
                 pod install  或者 pod update
                 pod install --verbose --no-repo-update
 
@@ -18,6 +20,7 @@
             git reset --hard HEAD^ //将代码回滚到之前版本
             git reflog //查看所有操作过的历史记录
             git clone https://github.com/AFNetworking/AFNetworking.git  克隆完整库
+            mv Objective-C.gitignore .gitignore //隐藏隐藏文件
 
 
 4 显示隐藏文件夹
@@ -25,4 +28,4 @@
         隐藏：defaults write com.apple.finder AppleShowAllFiles -bool false
         "重启finder
 
-
+*/

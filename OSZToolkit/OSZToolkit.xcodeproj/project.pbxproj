@@ -13,6 +13,7 @@
 		4E7A51E41D9CFD5600A3F713 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E7A51E21D9CFD5600A3F713 /* Main.storyboard */; };
 		4E7A51E61D9CFD5600A3F713 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4E7A51E51D9CFD5600A3F713 /* Assets.xcassets */; };
 		4E7A51E91D9CFD5600A3F713 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4E7A51E71D9CFD5600A3F713 /* LaunchScreen.storyboard */; };
+		4E8A3EB21DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8A3EB11DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.m */; };
 		4EBEA84A1D9D2F3800DE29B8 /* Objective-C.gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 4EBEA78D1D9D2F3800DE29B8 /* Objective-C.gitignore */; };
 		4EBEA84B1D9D2F3800DE29B8 /* Swift.gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 4EBEA78E1D9D2F3800DE29B8 /* Swift.gitignore */; };
 		4EBEA84C1D9D2F3800DE29B8 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 4EBEA7911D9D2F3800DE29B8 /* Podfile */; };
@@ -56,17 +57,18 @@
 /* Begin PBXFileReference section */
 		4E7A51D61D9CFD5600A3F713 /* OSZToolkit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OSZToolkit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E7A51DA1D9CFD5600A3F713 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		4E7A51DC1D9CFD5600A3F713 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		4E7A51DD1D9CFD5600A3F713 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		4E7A51DF1D9CFD5600A3F713 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		4E7A51E01D9CFD5600A3F713 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		4E7A51DC1D9CFD5600A3F713 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ../AppDelegate.h; sourceTree = "<group>"; };
+		4E7A51DD1D9CFD5600A3F713 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ../AppDelegate.m; sourceTree = "<group>"; };
+		4E7A51DF1D9CFD5600A3F713 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ViewController.h; path = ../ViewController.h; sourceTree = "<group>"; };
+		4E7A51E01D9CFD5600A3F713 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ViewController.m; path = ../ViewController.m; sourceTree = "<group>"; };
 		4E7A51E31D9CFD5600A3F713 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4E7A51E51D9CFD5600A3F713 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4E7A51E81D9CFD5600A3F713 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4E7A51EA1D9CFD5600A3F713 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4E8A3EB01DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+OSZObjcSugar.h"; sourceTree = "<group>"; };
+		4E8A3EB11DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+OSZObjcSugar.m"; sourceTree = "<group>"; };
 		4EBEA78D1D9D2F3800DE29B8 /* Objective-C.gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Objective-C.gitignore"; sourceTree = "<group>"; };
 		4EBEA78E1D9D2F3800DE29B8 /* Swift.gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Swift.gitignore; sourceTree = "<group>"; };
-		4EBEA7901D9D2F3800DE29B8 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		4EBEA7911D9D2F3800DE29B8 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
 		4EBEA7921D9D2F3800DE29B8 /* xcode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xcode.m; sourceTree = "<group>"; };
 		4EBEA7941D9D2F3800DE29B8 /* singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleton.h; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 		4EBEA8AE1D9D30F500DE29B8 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		4EBEA8B11D9D30F500DE29B8 /* GDataXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GDataXMLNode.h; sourceTree = "<group>"; };
 		4EBEA8B21D9D30F500DE29B8 /* GDataXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GDataXMLNode.m; sourceTree = "<group>"; };
+		4EFA66FD1D9D436200203AF5 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,11 +178,6 @@
 			children = (
 				4EBEA78A1D9D2F3800DE29B8 /* ToolKit */,
 				4EBEA7861D9D2F3000DE29B8 /* Classes */,
-				4E7A51DC1D9CFD5600A3F713 /* AppDelegate.h */,
-				4E7A51DD1D9CFD5600A3F713 /* AppDelegate.m */,
-				4E7A51DF1D9CFD5600A3F713 /* ViewController.h */,
-				4E7A51E01D9CFD5600A3F713 /* ViewController.m */,
-				4E7A51E21D9CFD5600A3F713 /* Main.storyboard */,
 				4E7A51D91D9CFD5600A3F713 /* Supporting Files */,
 			);
 			path = OSZToolkit;
@@ -196,9 +194,23 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		4E8A3EAF1DA0AE1F00B1F4D5 /* UINavigation+ */ = {
+			isa = PBXGroup;
+			children = (
+				4E8A3EB01DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.h */,
+				4E8A3EB11DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.m */,
+			);
+			path = "UINavigation+";
+			sourceTree = "<group>";
+		};
 		4EBEA7861D9D2F3000DE29B8 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				4E7A51DC1D9CFD5600A3F713 /* AppDelegate.h */,
+				4E7A51DD1D9CFD5600A3F713 /* AppDelegate.m */,
+				4E7A51DF1D9CFD5600A3F713 /* ViewController.h */,
+				4E7A51E01D9CFD5600A3F713 /* ViewController.m */,
+				4E7A51E21D9CFD5600A3F713 /* Main.storyboard */,
 				4EBEA7871D9D2F3000DE29B8 /* Model */,
 				4EBEA7881D9D2F3000DE29B8 /* View */,
 				4EBEA7891D9D2F3000DE29B8 /* ViewModel */,
@@ -230,6 +242,7 @@
 		4EBEA78A1D9D2F3800DE29B8 /* ToolKit */ = {
 			isa = PBXGroup;
 			children = (
+				4E8A3EAF1DA0AE1F00B1F4D5 /* UINavigation+ */,
 				4EBEA78B1D9D2F3800DE29B8 /* Git+ */,
 				4EBEA7961D9D2F3800DE29B8 /* NSArray+ */,
 				4EBEA79A1D9D2F3800DE29B8 /* NSObject+ */,
@@ -245,8 +258,8 @@
 		4EBEA78B1D9D2F3800DE29B8 /* Git+ */ = {
 			isa = PBXGroup;
 			children = (
+				4EFA66FD1D9D436200203AF5 /* PrefixHeader.pch */,
 				4EBEA78C1D9D2F3800DE29B8 /* GIT隐藏文件配置 */,
-				4EBEA78F1D9D2F3800DE29B8 /* PCH */,
 				4EBEA7911D9D2F3800DE29B8 /* Podfile */,
 				4EBEA7921D9D2F3800DE29B8 /* xcode.m */,
 				4EBEA7931D9D2F3800DE29B8 /* 单例模式头文件 */,
@@ -262,14 +275,6 @@
 				4EBEA78E1D9D2F3800DE29B8 /* Swift.gitignore */,
 			);
 			path = "GIT隐藏文件配置";
-			sourceTree = "<group>";
-		};
-		4EBEA78F1D9D2F3800DE29B8 /* PCH */ = {
-			isa = PBXGroup;
-			children = (
-				4EBEA7901D9D2F3800DE29B8 /* PrefixHeader.pch */,
-			);
-			path = PCH;
 			sourceTree = "<group>";
 		};
 		4EBEA7931D9D2F3800DE29B8 /* 单例模式头文件 */ = {
@@ -718,6 +723,7 @@
 				4E7A51DB1D9CFD5600A3F713 /* main.m in Sources */,
 				4EBEA8571D9D2F3800DE29B8 /* OSZNetWorkTool.m in Sources */,
 				4EBEA89B1D9D2F3800DE29B8 /* OSZHeaderLbl.m in Sources */,
+				4E8A3EB21DA0AE1F00B1F4D5 /* UINavigationController+OSZObjcSugar.m in Sources */,
 				4EBEA87A1D9D2F3800DE29B8 /* SSZipArchive.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -731,6 +737,7 @@
 				4E7A51E31D9CFD5600A3F713 /* Base */,
 			);
 			name = Main.storyboard;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		4E7A51E71D9CFD5600A3F713 /* LaunchScreen.storyboard */ = {
