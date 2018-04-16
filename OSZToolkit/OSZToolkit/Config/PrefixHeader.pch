@@ -22,5 +22,50 @@
 #define OScreenHeight   [UIScreen mainScreen].bounds.size.height
 #define OScreenBounds     [UIScreen mainScreen].bounds
 
+//系统版本
+#define iOS8  [[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0
+#define iOS9  [[[UIDevice currentDevice] systemVersion] floatValue] >= 9.0
+#define iOS10 [[[UIDevice currentDevice] systemVersion] floatValue] >= 10.0
+#define iOS11 [[[UIDevice currentDevice] systemVersion] floatValue] >= 11.0
+#define IOS_VERSION ([[[UIDevice currentDevice] systemVersion] floatValue])
+
+//#define SCREEN_WIDTH ([[UIScreen mainScreen]bounds].size.width)
+//#define SCREEN_HEIGHT ([[UIScreen mainScreen]bounds].size.height)
+
+//设备型号
+#define  iPhone35inch    (SCREEN_WIDTH == 320.f && SCREEN_HEIGHT == 480.f ? YES : NO)
+#define  iPhone40inch    (SCREEN_WIDTH == 320.f && SCREEN_HEIGHT == 568.f ? YES : NO)
+#define  iPhone47inch    (SCREEN_WIDTH == 375.f && SCREEN_HEIGHT == 667.f ? YES : NO)
+#define  iPhone55inch    (SCREEN_WIDTH == 414.f && SCREEN_HEIGHT == 736.f ? YES : NO)
+#define  iPhoneX         (SCREEN_WIDTH == 375.f && SCREEN_HEIGHT == 812.f ? YES : NO)
+
+//适配尺寸
+#define kFloat(x)  (((x)/375.0f) * SCREEN_WIDTH)
+#define kFont(x)   [UIFont systemFontOfSize:kFloat((x))]
+#define kFontMake(x) [UIFont systemFontOfSize:(x)]
+#define kScreenBounds ([[UIScreen mainScreen] bounds])
+#define NAV_HEIGHT (([[UIScreen mainScreen] bounds].size.height) == 812.0 ? 88 : 64)                       //导航栏高度
+#define NavBarButtonY (iPhoneX ? 58.5 : 34.5)        //导航栏按钮Y
+#define STATUSBAR_HEIGHT (iPhoneX?44:20)
+#define BOTTOMSAFEAREA_HEIGHT (iPhoneX?34:0)                              //iPhone X底部安全区域高度
+#define kTabBarHeight (iPhoneX?49 + BOTTOMSAFEAREA_HEIGHT : 49)           //tabbar高度
+//一个像素点的宏定义
+#define SINGLE_LINE_WIDTH           (1 / [UIScreen mainScreen].scale)
+#define SINGLE_LINE_ADJUST_OFFSET   ((1 / [UIScreen mainScreen].scale) / 2)
+
+#define AdjustsScrollViewInsetNever(controller, view) if(@available(iOS 11.0, *)) {view.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;} else if([controller isKindOfClass:[UIViewController class]]) {controller.automaticallyAdjustsScrollViewInsets = false;}
+
+#define UITableViewEstimatedHeight(tableView) \
+if (@available(iOS 11.0, *)) { \
+tableView.estimatedRowHeight = 0; \
+tableView.estimatedSectionHeaderHeight = 0; \
+tableView.estimatedSectionFooterHeight = 0; \
+}
+
+
+// 颜色 UIColorFromHex(0xffffff)
+#define UIColorFromHex(s) [UIColor colorWithRed:(((s & 0xFF0000) >> 16 )) / 255.0 green:((( s & 0xFF00 ) >> 8 )) / 255.0 blue:(( s & 0xFF )) / 255.0 alpha:1.0]
+#define UIColorRGB(r,g,b)     [UIColor colorWithRed:r/255.f green:g/255.f blue:b/255.f alpha:1.f]
+
 
 #endif
