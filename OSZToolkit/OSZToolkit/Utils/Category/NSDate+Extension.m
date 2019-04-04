@@ -50,7 +50,34 @@
     return [gregorian dateFromComponents:components];
 }
 
-#pragma mark - 判断日期是否是明天
+#pragma mark - 下个月的日期
+- (NSDate *)dateOfNextMonth {
+    //当天日期的下个月的日期
+    NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute;
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *components = [gregorian components:unit fromDate:self];
+    [components setMonth:[components month] + 1];
+    return [gregorian dateFromComponents:components];
+}
+
+#pragma mark - 查询指定日期所在月份总共有多少天
+- (NSInteger)numberOfDaysInMonth {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSRange range = [calendar rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:self];
+    NSUInteger numberOfDaysInMonth = range.length;
+    return numberOfDaysInMonth;
+}
+
+#pragma mark - 当前月份的第一天
+- (NSDate *)firstDay {
+    NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute;
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *components = [gregorian components:unit fromDate:self];
+    [components setDay:1];
+    return [gregorian dateFromComponents:components];
+}
+
+#pragma mark - 判断日期是否是后天
 - (BOOL)isDayAfterTomorrow {
     //当天日期的第二天日期
     NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear;
@@ -118,12 +145,11 @@
 }
 
 - (NSString *)toString {
-    //根据当前时间和系统所在时区得到和标准时间的Interval，然后得到效验后的时间localeDate，最后[localeDate timeIntervalSince1970]获取效验后的时间和1970年时间的差值，也就是时间戳
-    NSTimeZone *zone = [NSTimeZone systemTimeZone];
-    NSInteger interval = [zone secondsFromGMTForDate:self];
+    NSTimeInterval interval = [self timeIntervalSince1970];
     
-    NSDate *localeDate = [self  dateByAddingTimeInterval: interval];
-    return [NSString stringWithFormat:@"%ld", (long)[localeDate timeIntervalSince1970] * 1000];
+    long totalMilliseconds = interval * 1000;
+    
+    return [NSString stringWithFormat:@"%li", (long)totalMilliseconds];
 }
 
 /** 根据格式转为字符串 */
@@ -131,6 +157,97 @@
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     [fmt setDateFormat:formatter];
     return [fmt stringFromDate:self];
+}
+
+#pragma mark 两个日期相差多少天
++ (NSInteger)betweenDaysFrom:(NSDate *)fromDate toDate:(NSDate *)toDate {
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    unsigned int unitFlags = NSCalendarUnitDay;
+    NSDateComponents *comps = [gregorian components:unitFlags fromDate:fromDate toDate:toDate options:0];
+    return [comps day];
+}
+
+#pragma mark fromDate相差between天的日期
++ (NSDate *)afterDateFrom:(NSDate *)fromDate between:(NSInteger)between {
+    NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear;
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *components = [gregorian components:unit fromDate:fromDate];
+    [components setDay:[components day] + between];
+    return [gregorian dateFromComponents:components];
+}
+
+#pragma mark 两个日期相差多少个月
++ (NSInteger)betweenMonthFrom:(NSDate *)fromDate toDate:(NSDate *)toDate {
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    unsigned int unitFlags = NSCalendarUnitMonth;
+    NSDateComponents *comps = [gregorian components:unitFlags fromDate:fromDate toDate:toDate options:0];
+    return [comps month];
+}
+
+#pragma mark fromDate相差between月的日期
++ (NSDate *)afterMonthFrom:(NSDate *)fromDate between:(NSInteger)between {
+    NSCalendarUnit unit = NSCalendarUnitMonth | NSCalendarUnitYear;
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *components = [gregorian components:unit fromDate:fromDate];
+    [components setMonth:[components month] + between];
+    return [gregorian dateFromComponents:components];
+}
+
+#pragma mark 时间戳转NSDate
++ (NSDate *)dateFromTimestamp:(NSInteger)timestamp {
+    if (timestamp == 0) {
+        return nil;
+    }
+    
+    return [[NSString stringWithFormat:@"%li", (long)timestamp] millisecondToDate];
+}
+
+#pragma mark 判断两个日期是否相等
++ (BOOL)isSameDateWithDate:(NSDate *)aDate andDate:(NSDate *)bDate {
+    return ([aDate year] == [bDate year] && [aDate month] == [bDate month] && [aDate day] == [bDate day]);
+}
+
+#pragma mark 判断两个日期的月份是否相等
++ (BOOL)isSameMonthDateWithDate:(NSDate *)aDate andDate:(NSDate *)bDate {
+    return ([aDate year] == [bDate year] && [aDate month] == [bDate month]);
+}
+
+#pragma mark 获取中文月份
++ (NSString *)getChineseMonth:(NSDate *)date {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy年MM月dd日"];
+    [dateFormatter setDateFormat:@"MMM"];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"zh"];
+    NSString *zhMonth = [dateFormatter stringFromDate:date];
+    return zhMonth;
+}
+
+#pragma mark - 获取英文月份
++ (NSString *)getEnglishMonth:(NSDate *)date {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    [dateFormatter setDateFormat:@"MMMM"];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+    NSString * enMonth = [dateFormatter stringFromDate:date];
+    return enMonth;
+}
+
+#pragma mark - 一天中的最后一个时间点
++ (NSInteger)theLastTimeOfDay:(NSDate *)date {
+    
+    //当天日期的第二天日期
+    NSCalendarUnit unit = NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitHour | NSCalendarUnitMinute;
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *components = [gregorian components:unit fromDate:date];
+    [components setDay:[components day] + 1];
+    NSDate *nextDate = [gregorian dateFromComponents:components];
+    
+    //第二天的前一秒
+    components = [gregorian components:unit fromDate:nextDate];
+    [components setSecond:[components second] - 1];
+    NSDate *rightDate = [gregorian dateFromComponents:components];
+    
+    return [[rightDate toString] integerValue];
 }
 
 @end

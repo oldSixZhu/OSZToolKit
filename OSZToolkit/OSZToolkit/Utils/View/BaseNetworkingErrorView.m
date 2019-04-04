@@ -33,11 +33,10 @@
 }
 
 - (void)initSubviews {
-    self.backgroundColor = UIColorFromHex(0x182845);
-    
     [self addSubview:self.errorImageView];
     [self addSubview:self.errorTextLabel];
     [self addSubview:self.reloadButton];
+    self.backgroundColor = UIColorFromHex(0xEAECEF);
 }
 
 #pragma mark - 布局
@@ -48,11 +47,11 @@
     [self.errorTextLabel layoutForFrame:CGRectMake(0, 0, SCREEN_WIDTH, CGFLOAT_MAX)];
     [self.errorTextLabel centerEqualToView:self];
     
-    self.errorImageView.frame = CGRectMake((self.v_width - kFloat(100))/2.0, 0, kFloat(100), kFloat(95));
-    self.errorImageView.v_bottom = self.errorTextLabel.v_top - kFloat(25);
+    self.errorImageView.frame = CGRectMake((self.v_width - kFloat(140))/2.0, 0, kFloat(140), kFloat(140));
+    self.errorImageView.v_bottom = self.errorTextLabel.v_top - kFloat(15);
     
-    self.reloadButton.frame = CGRectMake((self.v_width - kFloat(100))/2.0, 0, kFloat(100), kFloat(40));
-    self.reloadButton.v_top = self.errorTextLabel.v_bottom + kFloat(80);
+    self.reloadButton.frame = CGRectMake((self.v_width - kFloat(110))/2.0, 0, kFloat(110), kFloat(40));
+    self.reloadButton.v_top = self.errorTextLabel.v_bottom + kFloat(40);
 }
 
 #pragma mark - 重新加载
@@ -74,7 +73,7 @@
 - (UILabel *)errorTextLabel {
     if (!_errorTextLabel) {
         _errorTextLabel = [[UILabel alloc] init];
-        _errorTextLabel.textColor = [UIColor whiteColor];
+        _errorTextLabel.textColor = UIColorFromHex(0x8597A1);
         _errorTextLabel.font = kFont(15);
         _errorTextLabel.text = XYLString(@"network_view_disconnected");
         _errorTextLabel.textAlignment = NSTextAlignmentCenter;

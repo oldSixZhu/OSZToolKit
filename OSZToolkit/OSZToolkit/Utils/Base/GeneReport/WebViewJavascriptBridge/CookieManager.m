@@ -45,6 +45,8 @@
 }
 
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-retain-self"
 
 - (WKProcessPool *)processPool {
     if (!_processPool) {
@@ -56,5 +58,7 @@
     
     return _processPool;
 }
+
+#pragma clang diagnostic pop
 
 @end

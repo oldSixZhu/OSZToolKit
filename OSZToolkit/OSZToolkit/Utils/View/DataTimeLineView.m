@@ -32,15 +32,19 @@
     CGContextAddLines(context, aPoints, 2);//添加线
     CGContextDrawPath(context, kCGPathStroke); //根据坐标绘制路径
     
+    CGFloat centerY = (self.v_height - kFloat(10)) * 0.5 + kFloat(10);
+    if (self.isFirst) {
+        centerY = self.v_height * 0.5;
+    }
     //绘制外圆
     //    CGContextSetRGBFillColor(context, 24.0/255.0, 40.0/255.0, 69.0/255.0, 1.0);
     CGContextSetFillColorWithColor(context, UIColorFromHex(0x182845).CGColor);
-    CGContextAddArc(context, centerX, self.v_height - 27, 4, 0, 2*M_PI, 0);
+    CGContextAddArc(context, centerX, centerY, 4, 0, 2*M_PI, 0);
     CGContextDrawPath(context, kCGPathFill); //绘制路径
     
     //绘制内圆
     CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
-    CGContextAddArc(context, centerX, self.v_height - 27, 2.5, 0, 2*M_PI, 0);
+    CGContextAddArc(context, centerX, centerY, 2.5, 0, 2*M_PI, 0);
     CGContextDrawPath(context, kCGPathFill); //绘制路径
     
 }

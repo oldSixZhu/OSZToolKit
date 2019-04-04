@@ -135,9 +135,9 @@ else if ([self isKindOfClass:[UITableView class]]) {\
 - (void)xy_longPressGestureRecognized:(UILongPressGestureRecognizer *)longPress {
     
     //长按手势识别开始之前，先判断是否允许长按
-//    if (!self.canMoveCell) {
-//        return;
-//    }
+    if (!self.canMoveCell) {
+        return;
+    }
     
     if (![self isKindOfClass:[UITableView class]] &&
         ![self isKindOfClass:[UICollectionView class]]) {
@@ -203,7 +203,8 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         UIView *cell = [self cellForIndexPath:self.xy_newRollIndexPath];
         if ([cell isKindOfClass:[CourseActionTableViewCell class]]) {
             CourseActionTableViewCell *courseCell = (CourseActionTableViewCell *)cell;
-            if (courseCell.actionModel.isFinish) {
+            ActionModel *actionModel = courseCell.actionModel;
+            if ([actionModel isEditable]) {
                 return;
             }
         }
@@ -212,7 +213,29 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         if (self.xy_newRollIndexPath &&
             ![self.xy_newRollIndexPath isEqual:self.lastRollIndexPath] && self.xy_newRollIndexPath.section == self.lastRollIndexPath.section) {
             // 移动cell到新的位置
-            [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
+            //解决cell高度不同移动时，导致的视图闪动问题=====================================
+            UITableViewCell *newIndexPathCell = [tableView cellForRowAtIndexPath:self.xy_newRollIndexPath];
+            UITableViewCell *lastIndexPathCell = [tableView cellForRowAtIndexPath:self.lastRollIndexPath];
+            if (newIndexPathCell.contentView.v_height > lastIndexPathCell.contentView.v_height) {
+                CGRect newRect = [tableView rectForRowAtIndexPath:self.xy_newRollIndexPath];
+                BOOL upDirection = self.xy_newRollIndexPath.row < self.lastRollIndexPath.row;
+                if (upDirection) {
+                    //向上拖动
+                    if (self.xy_fingerPosition.y < CGRectGetMidY(newRect)) {
+                        [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
+                    }
+                } else {
+                    //向下拖动
+                    if (self.xy_fingerPosition.y > CGRectGetMidY(newRect)) {
+                        [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
+                    }
+                }
+            } else {
+                [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
+            }
+            
+            //原代码
+//            [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
         }
         /* 取消边缘滚动
         // 检测是否到达边缘，如果到达边缘就开始运行定时器,自动滚动
@@ -326,7 +349,8 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     UIView *currentCell = [self cellForIndexPath:indexPath];
     if ([currentCell isKindOfClass:[CourseActionTableViewCell class]]) {
         CourseActionTableViewCell *courseCell = (CourseActionTableViewCell *)currentCell;
-        if (courseCell.actionModel.isFinish) {
+        ActionModel *actionModel = courseCell.actionModel;
+        if ([actionModel isEditable]) {
             return;
         }
     }
@@ -376,7 +400,8 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     UIView *currentCell = [self cellForIndexPath:self.lastRollIndexPath];
     if ([currentCell isKindOfClass:[CourseActionTableViewCell class]]) {
         CourseActionTableViewCell *courseCell = (CourseActionTableViewCell *)currentCell;
-        if (courseCell.actionModel.isFinish) {
+        ActionModel *actionModel = courseCell.actionModel;
+        if ([actionModel isEditable]) {
             return;
         }
     }
@@ -392,7 +417,9 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     
     //交换移动cell位置
     if ([self isKindOfClass:[UITableView class]]) {
-        [(UITableView *)self moveRowAtIndexPath:self.lastRollIndexPath toIndexPath:newIndexPath];
+        [UIView performWithoutAnimation:^{
+            [(UITableView *)self moveRowAtIndexPath:self.lastRollIndexPath toIndexPath:newIndexPath];
+        }];
     }
     else if ([self isKindOfClass:[UICollectionView class]]) {
         [(UICollectionView *)self moveItemAtIndexPath:self.lastRollIndexPath toIndexPath:newIndexPath];
@@ -411,7 +438,8 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     UIView *currentCell = [self cellForIndexPath:self.lastRollIndexPath];
     if ([currentCell isKindOfClass:[CourseActionTableViewCell class]]) {
         CourseActionTableViewCell *courseCell = (CourseActionTableViewCell *)currentCell;
-        if (courseCell.actionModel.isFinish) {
+        ActionModel *actionModel = courseCell.actionModel;
+        if ([actionModel isEditable]) {
             return;
         }
     }

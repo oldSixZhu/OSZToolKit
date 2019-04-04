@@ -24,6 +24,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <SystemConfiguration/SystemConfiguration.h>
+//引入IOS自带密码库
+#import <CommonCrypto/CommonCryptor.h>
 
 #import "BaseViewController.h"
 
@@ -595,7 +597,7 @@
 {
     NSDateFormatter *formater = [[ NSDateFormatter alloc] init];
     NSDate *curDate = [NSDate date];//获取当前日期
-    [formater setDateFormat:@"YYYY-MM-dd HH:mm:ss"];//这里去掉 具体时间 保留日期
+    [formater setDateFormat:@"yyyy-MM-dd HH:mm:ss"];//这里去掉 具体时间 保留日期
     NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:TIME_ZONE];
     [formater setTimeZone:timeZone];
     NSString * curTime = [formater stringFromDate:curDate];
@@ -610,7 +612,7 @@
 + (NSString *)timeStringIntoTimeStamp:(NSString *)time
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:TIME_ZONE];
     [dateFormatter setTimeZone:timeZone];
     
@@ -625,7 +627,7 @@
 + (NSString *)timeStampIntoTimeString:(NSString *)time
 {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     /* 设置时区 */
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:TIME_ZONE];
     [dateFormatter setTimeZone:timeZone];
@@ -654,7 +656,7 @@
     //今天
     NSDateFormatter *formater = [[ NSDateFormatter alloc] init];
     NSDate *curDate = [NSDate date];//获取当前日期
-    [formater setDateFormat:@"YYYY-MM-dd HH:mm:ss"];//这里去掉 具体时间 保留日期
+    [formater setDateFormat:@"yyyy-MM-dd HH:mm:ss"];//这里去掉 具体时间 保留日期
     NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:TIME_ZONE];
     [formater setTimeZone:timeZone];
     NSString * curTime = [formater stringFromDate:curDate];
@@ -686,7 +688,7 @@
 #pragma mark - 当前界面截图
 + (UIImage *)imageFromCurrentView:(UIView *)view
 {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, view.layer.contentsScale);
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, [UIScreen mainScreen].scale);
     
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
     
@@ -757,6 +759,7 @@
     CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
     maskLayer.frame = view.bounds;
     maskLayer.path = maskPath.CGPath;
+    maskLayer.strokeColor = [UIColor whiteColor].CGColor;
     view.layer.mask = maskLayer;
 }
 
@@ -1020,6 +1023,289 @@ static void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWi
             }
         }
     }
+}
+
+#pragma mark - 加密、解密
+/** DES加密 */
++ (NSString *)desStringFromText:(NSString *)text key:(NSString *)key {
+    if (text.length && key.length) {
+        return [self encryptUseDES:text Andkey:key];
+    }
+    return nil;
+}
+
+/** DES解密 */
++ (NSString *)encryptDESStringFromText:(NSString *)text key:(NSString *)key {
+    if (text.length && key.length) {
+        return [self decryptUseDES:text Andkey:key];
+    }
+    return nil;
+}
+
+/** DES加密 */
++ (NSString *)encryptUseDES:(NSString *)clearText Andkey:(NSString *)key {
+    NSString *ciphertext = nil;
+    NSData *textData = [clearText dataUsingEncoding:NSUTF8StringEncoding];
+    NSUInteger dataLength = [textData length];
+    
+    size_t bufferSize = dataLength + kCCBlockSizeAES128;
+    void * buffer = malloc(bufferSize);
+    size_t numBytesEncrypted = 0;
+    
+    CCCryptorStatus cryptStatus = CCCrypt(kCCEncrypt, kCCAlgorithmDES,
+                                          kCCOptionPKCS7Padding | kCCOptionECBMode,
+                                          [key UTF8String], kCCBlockSizeDES,
+                                          NULL,
+                                          [textData bytes]  , dataLength,
+                                          buffer, bufferSize,
+                                          &numBytesEncrypted);
+    
+    if (cryptStatus == kCCSuccess) {
+        NSData *data = [NSData dataWithBytes:buffer length:(NSUInteger)numBytesEncrypted];
+        ciphertext = [self stringWithHexBytes2:data];
+    }
+    
+    free(buffer);
+    return ciphertext;
+}
+
+/** DES解密 */
++ (NSString *)decryptUseDES:(NSString *)plainText Andkey:(NSString *)key {
+    NSString *cleartext = nil;
+    NSData *textData = [self parseHexToByteArray:plainText];
+    NSUInteger dataLength = [textData length];
+    size_t bufferSize = dataLength + kCCBlockSizeAES128;
+    void *buffer = malloc(bufferSize);
+    size_t numBytesEncrypted = 0;
+    
+    
+    CCCryptorStatus cryptStatus = CCCrypt(kCCDecrypt, kCCAlgorithmDES,
+                                          kCCOptionPKCS7Padding | kCCOptionECBMode,
+                                          [key UTF8String], kCCKeySizeDES,
+                                          NULL,
+                                          [textData bytes]  , dataLength,
+                                          buffer, bufferSize,
+                                          &numBytesEncrypted);
+    if (cryptStatus == kCCSuccess) {
+        NSData *data = [NSData dataWithBytes:buffer length:(NSUInteger)numBytesEncrypted];
+        cleartext = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    }
+    
+    free(buffer);
+    return cleartext;
+}
+
+//nsdata转成16进制字符串
++ (NSString*)stringWithHexBytes2:(NSData *)sender {
+    static const char hexdigits[] = "0123456789ABCDEF";
+    const size_t numBytes = [sender length];
+    const unsigned char* bytes = [sender bytes];
+    char *strbuf = (char *)malloc(numBytes * 2 + 1);
+    char *hex = strbuf;
+    NSString *hexBytes = nil;
+    
+    for (int i = 0; i<numBytes; ++i) {
+        const unsigned char c = *bytes++;
+        *hex++ = hexdigits[(c >> 4) & 0xF];
+        *hex++ = hexdigits[(c ) & 0xF];
+    }
+    
+    *hex = 0;
+    hexBytes = [NSString stringWithUTF8String:strbuf];
+    
+    free(strbuf);
+    return hexBytes;
+}
+
+
+/*
+ 将16进制数据转化成NSData 数组
+ */
++ (NSData*)parseHexToByteArray:(NSString *)hexString {
+    int j=0;
+    Byte bytes[hexString.length];
+    for(int i=0;i<[hexString length];i++)
+    {
+        int int_ch;  /// 两位16进制数转化后的10进制数
+        unichar hex_char1 = [hexString characterAtIndex:i]; ////两位16进制数中的第一位(高位*16)
+        int int_ch1;
+        if(hex_char1 >= '0' && hex_char1 <='9')
+            int_ch1 = (hex_char1-48)*16;   //// 0 的Ascll - 48
+        else if(hex_char1 >= 'A' && hex_char1 <='F')
+            int_ch1 = (hex_char1-55)*16; //// A 的Ascll - 65
+        else
+            int_ch1 = (hex_char1-87)*16; //// a 的Ascll - 97
+        i++;
+        unichar hex_char2 = [hexString characterAtIndex:i]; ///两位16进制数中的第二位(低位)
+        int int_ch2;
+        if(hex_char2 >= '0' && hex_char2 <='9')
+            int_ch2 = (hex_char2-48); //// 0 的Ascll - 48
+        else if(hex_char2 >= 'A' && hex_char1 <='F')
+            int_ch2 = hex_char2-55; //// A 的Ascll - 65
+        else
+            int_ch2 = hex_char2-87; //// a 的Ascll - 97
+        
+        int_ch = int_ch1+int_ch2;
+        bytes[j] = int_ch;  ///将转化后的数放入Byte数组里
+        j++;
+    }
+    
+    NSData *newData = [[NSData alloc] initWithBytes:bytes length:hexString.length/2];
+    return newData;
+}
+
+#pragma mark - 设备型号
++ (DeviceType)deviceType {
+    
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString *platform = [NSString stringWithCString:systemInfo.machine
+                                            encoding:NSUTF8StringEncoding];
+    //simulator
+    if ([platform isEqualToString:@"i386"])          return simulator;
+    if ([platform isEqualToString:@"x86_64"])        return simulator;
+    
+    //iPhone
+    if ([platform isEqualToString:@"iPhone1,1"])     return iPhone_1G;
+    if ([platform isEqualToString:@"iPhone1,2"])     return iPhone_3G;
+    if ([platform isEqualToString:@"iPhone2,1"])     return iPhone_3GS;
+    if ([platform isEqualToString:@"iPhone3,1"])     return iPhone_4;
+    if ([platform isEqualToString:@"iPhone3,2"])     return iPhone_4;
+    if ([platform isEqualToString:@"iPhone4,1"])     return iPhone_4S;
+    if ([platform isEqualToString:@"iPhone5,1"])     return iPhone_5;
+    if ([platform isEqualToString:@"iPhone5,2"])     return iPhone_5;
+    if ([platform isEqualToString:@"iPhone5,3"])     return iPhone_5C;
+    if ([platform isEqualToString:@"iPhone5,4"])     return iPhone_5C;
+    if ([platform isEqualToString:@"iPhone6,1"])     return iPhone_5S;
+    if ([platform isEqualToString:@"iPhone6,2"])     return iPhone_5S;
+    if ([platform isEqualToString:@"iPhone7,1"])     return iPhone_6_P;
+    if ([platform isEqualToString:@"iPhone7,2"])     return iPhone_6;
+    if ([platform isEqualToString:@"iPhone8,1"])     return iPhone_6S;
+    if ([platform isEqualToString:@"iPhone8,2"])     return iPhone_6S_P;
+    if ([platform isEqualToString:@"iPhone8,4"])     return iPhone_SE;
+    if ([platform isEqualToString:@"iPhone9,1"])     return iPhone_7;
+    if ([platform isEqualToString:@"iPhone9,3"])     return iPhone_7;
+    if ([platform isEqualToString:@"iPhone9,2"])     return iPhone_7_P;
+    if ([platform isEqualToString:@"iPhone9,4"])     return iPhone_7_P;
+    if ([platform isEqualToString:@"iPhone10,1"])    return iPhone_8;
+    if ([platform isEqualToString:@"iPhone10,4"])    return iPhone_8;
+    if ([platform isEqualToString:@"iPhone10,2"])    return iPhone_8_P;
+    if ([platform isEqualToString:@"iPhone10,5"])    return iPhone_8_P;
+    if ([platform isEqualToString:@"iPhone10,3"])    return iPhone_X;
+    if ([platform isEqualToString:@"iPhone10,6"])    return iPhone_X;
+    
+    return unknown;
+}
+
+#pragma mark - 新手引导图
++ (UIImage *)imageForPage:(BeginnerGuidePage)page {
+    
+    NSInteger width = (long)([UIScreen mainScreen].bounds.size.width * [UIScreen mainScreen].scale);
+    NSInteger height = (long)([UIScreen mainScreen].bounds.size.height * [UIScreen mainScreen].scale);
+    
+    if (isIPhoneXSeries()) {
+        width = 1242;
+        height = 2688;
+    }
+    
+    switch (page) {
+        case courseListGuidePage: {                             //课程首页 - 待办课程
+            if (isIPhoneXSeries()) {
+                return [UIImage imageNamed:[NSString stringWithFormat:@"%liX%li_1", (long)width, (long)height]];
+            } else if (DEVICE_IPAD) {
+                return [UIImage imageNamed:@"guide_1_1536X2048"];
+            } else {
+                return [UIImage imageNamed:@"guide_1"];
+            }
+        }
+        case studentListGuidePage: {                            //学员列表 - 邀约
+            if (isIPhoneXSeries()) {
+                return [UIImage imageNamed:[NSString stringWithFormat:@"%liX%li_2", (long)width, (long)height]];
+            } else if (DEVICE_IPAD) {
+                return [UIImage imageNamed:@"guide_2_1536X2048"];
+            } else {
+                return [UIImage imageNamed:@"guide_2"];
+            }
+        }
+            break;
+        case courseActionOneGuidePage: {                        //课程上课 - 结束课程
+            if (isIPhoneXSeries()) {
+                return [UIImage imageNamed:[NSString stringWithFormat:@"%liX%li_3_0", (long)width, (long)height]];
+            } else if (DEVICE_IPAD) {
+                return [UIImage imageNamed:@"guide_3_1536X2048"];
+            } else {
+                return [UIImage imageNamed:@"guide_3_0"];
+            }
+        }
+        case courseActionTwoGuidePage: {                        //课程上课 - 切换动作
+            if (isIPhoneXSeries()) {
+                return [UIImage imageNamed:[NSString stringWithFormat:@"%liX%li_3_1", (long)width, (long)height]];
+            } else if (DEVICE_IPAD) {
+                return [UIImage imageNamed:@"guide_3_1536X2048"];
+            } else {
+                return [UIImage imageNamed:@"guide_3_1"];
+            }
+        }
+        case courseActionThreeGuidePage: {                      //课程上课 - 间歇计时器
+            if (isIPhoneXSeries()) {
+                return [UIImage imageNamed:[NSString stringWithFormat:@"%liX%li_3_2", (long)width, (long)height]];
+            } else if (DEVICE_IPAD) {
+                return [UIImage imageNamed:@"guide_3_1536X2048"];
+            } else {
+                return [UIImage imageNamed:@"guide_3_2"];
+            }
+        }
+        default:
+            break;
+    }
+    
+    return nil;
+}
+
+#pragma mark - 保存日志文件
++ (void)redirectNSLogToDocumentFolder {
+    //如果已经连接Xcode调试则不输出到文件
+    if(isatty(STDOUT_FILENO)) {
+        return;
+    }
+    
+    UIDevice *device = [UIDevice currentDevice];
+    if([[device model] hasSuffix:@"Simulator"]){ //在模拟器不保存到文件中
+        return;
+    }
+    
+    //获取Document目录下的Log文件夹，若没有则新建
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *logDirectory = [[paths objectAtIndex:0] stringByAppendingPathComponent:@"Log"];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL fileExists = [fileManager fileExistsAtPath:logDirectory];
+    if (!fileExists) {
+        [fileManager createDirectoryAtPath:logDirectory  withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"zh_CN"]];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"]; //每次启动后都保存一个新的日志文件中
+    NSString *dateStr = [formatter stringFromDate:[NSDate date]];
+    NSString *logFilePath = [logDirectory stringByAppendingFormat:@"/%@.txt",dateStr];
+    
+    // freopen 重定向输出输出流，将log输入到文件
+    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding], "a+", stdout);
+    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding], "a+", stderr);
+}
+
+/** 产生随机字符串 */
++ (NSString *)generateString:(NSInteger)length {
+    NSString *sourceStr = @"0123456789ABCDEFGHIJKLMNOPQRST";
+    NSMutableString *resultStr = [[NSMutableString alloc] init];
+    srand((unsigned)time(NULL));
+    for (int i = 0; i < length; i++) {
+        unsigned index = rand() % [sourceStr length];
+        NSString *oneStr = [sourceStr substringWithRange:NSMakeRange(index, 1)];
+        [resultStr appendString:oneStr];
+    }
+    return resultStr;
 }
 
 @end

@@ -263,67 +263,20 @@ static char firstLetterArray[HANZI_COUNT] =
                  forKey:[NSString stringWithUTF8String:(const char *)&i]];
     }
     
-//    for (NSString *words in self) {
-//        NSString *firstLetter = [words getFirstLetter];
-//        NSMutableArray *array = dict[firstLetter];
-//        [array addObject:words];
-//    }
-    
-    //将数组类型改为，保存了学生对象的数组
-    for (StudentsModel *student in self) {
-        NSString *words = @"";
-        if (student.name.length > 0) {
-            words = student.name;
-        } else {
-            words = [Tools avoidNull:student.accountMobile];
-            if (words.length == 0) {
-                words = @"😊";
-            }
-        }
+    for (NSString *words in self) {
         NSString *firstLetter = [words getFirstLetter];
         NSMutableArray *array = dict[firstLetter];
-        [array addObject:student];
+        [array addObject:words];
     }
     
     NSMutableArray *resultArray = [NSMutableArray array];
-//    for (int i = 'A'; i <= 'Z'; i++) {
-//        NSString *firstLetter = [NSString stringWithUTF8String:(const char *)&i];
-//        NSMutableArray *array = dict[firstLetter];
-//        if ([array count]) {
-//            [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-//                NSString *word1 = obj1;
-//                NSString *word2 = obj2;
-//                return [word1 localizedCompare:word2];
-//            }];
-//            NSDictionary *resultDict = @{@"firstLetter": firstLetter,
-//                                         @"content": array};
-//            [resultArray addObject:resultDict];
-//        }
-//    }
-    
-//    if ([dict[@"#"] count]) {
-//        NSMutableArray *array = dict[@"#"];
-//        [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-//            NSString *word1 = obj1;
-//            NSString *word2 = obj2;
-//            return [word1 localizedCompare:word2];
-//        }];
-//        NSDictionary *resultDict = @{@"firstLetter": @"#",
-//                                     @"content": array};
-//        [resultArray addObject:resultDict];
-//    }
-
     for (int i = 'A'; i <= 'Z'; i++) {
         NSString *firstLetter = [NSString stringWithUTF8String:(const char *)&i];
         NSMutableArray *array = dict[firstLetter];
         if ([array count]) {
             [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                StudentsModel *student1 = (StudentsModel *)obj1;
-                NSString *word1 = ((student1.name.length>0)?student1.name:[Tools avoidNull:student1.accountMobile]);
-                
-                StudentsModel *student2 = (StudentsModel *)obj2;
-                NSString *word2 = ((student2.name.length>0)?student2.name:[Tools avoidNull:student2.accountMobile]);
-                
+                NSString *word1 = obj1;
+                NSString *word2 = obj2;
                 return [word1 localizedCompare:word2];
             }];
             NSDictionary *resultDict = @{@"firstLetter": firstLetter,
@@ -335,19 +288,16 @@ static char firstLetterArray[HANZI_COUNT] =
     if ([dict[@"#"] count]) {
         NSMutableArray *array = dict[@"#"];
         [array sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-            StudentsModel *student1 = (StudentsModel *)obj1;
-            NSString *word1 = ((student1.name.length>0)?student1.name:[Tools avoidNull:student1.accountMobile]);
-            
-            StudentsModel *student2 = (StudentsModel *)obj2;
-            NSString *word2 = ((student2.name.length>0)?student2.name:[Tools avoidNull:student2.accountMobile]);
-            
+            NSString *word1 = obj1;
+            NSString *word2 = obj2;
             return [word1 localizedCompare:word2];
         }];
-        
         NSDictionary *resultDict = @{@"firstLetter": @"#",
                                      @"content": array};
         [resultArray addObject:resultDict];
     }
+
+
     return resultArray;
 }
 

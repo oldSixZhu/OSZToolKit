@@ -37,6 +37,10 @@ static char *cornerImageViewKey;
     return self.frame.origin;
 }
 
+- (void)setV_origin:(CGPoint)origin {
+    self.frame = CGRectMake(origin.x, origin.y, self.frame.size.width, self.frame.size.height);
+}
+
 - (CGFloat)v_centerX {
     return self.center.x;
 }

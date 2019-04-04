@@ -90,7 +90,8 @@
     _base.delegate = self;
 }
 
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-retain-self"
 - (void)WKFlushMessageQueue {
     [_webView evaluateJavaScript:[_base webViewJavascriptFetchQueyCommand] completionHandler:^(NSString* result, NSError* error) {
         if (error != nil) {
@@ -99,6 +100,7 @@
         [_base flushMessageQueue:result];
     }];
 }
+#pragma clang diagnostic pop
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     if (webView != _webView) { return; }

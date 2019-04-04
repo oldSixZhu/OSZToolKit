@@ -29,6 +29,7 @@
 - (void)setV_top:(CGFloat)top;
 - (void)setV_bottom:(CGFloat)bottom;
 - (void)setV_right:(CGFloat)right;
+- (void)setV_origin:(CGPoint)origin;
 
 // height
 - (void)setV_height:(CGFloat)height;

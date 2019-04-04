@@ -6,7 +6,10 @@
 //
 
 #import "MBProgressHUD+MJ.h"
-static CGFloat showtime = 1.0;
+
+#import "LoadingAnimationView.h"
+
+static CGFloat showtime = 2.0;
 
 @implementation MBProgressHUD (MJ)
 
@@ -220,6 +223,26 @@ static CGFloat showtime = 1.0;
     
 }
 
+// 黑色的背景，图片+文字
++ (void)showBlackToastWithString:(NSString *)tipStr andImage:(UIImage *)toastImg
+{
+    UIWindow *window = [self removeHUDFromWindow];
+    if (!toastImg) {
+        toastImg = [UIImage imageNamed:@"icon_toast_success"];
+    }
+    MBProgressHUD *alert = [[MBProgressHUD alloc] initWithView:window];
+    [window addSubview:alert];
+    alert.customView = [[UIImageView alloc] initWithImage:toastImg];
+    alert.mode = MBProgressHUDModeCustomView;
+    alert.detailsLabel.text = tipStr;
+    alert.detailsLabel.font = [UIFont fontWithName:@"PingFangSC-Medium" size:kFloat(15)];
+    alert.detailsLabel.textColor = [UIColor whiteColor];
+    alert.bezelView.color = [UIColor blackColor];
+    alert.userInteractionEnabled = NO;
+    [alert showAnimated:YES];
+    [alert hideAnimated:YES afterDelay:1.0];
+}
+
 
 /**
  *  在window上显示转圈的MBProgressHUD (不会自动消失,需要手动调用隐藏方法)
@@ -232,12 +255,18 @@ static CGFloat showtime = 1.0;
     
     MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:window];
     [window addSubview:HUD];
-    HUD.mode = MBProgressHUDModeIndeterminate;
-    HUD.label.text = tipStr;
-    HUD.userInteractionEnabled = NO;
-    
-    //在window上显示就不让其点击
+//    HUD.mode = MBProgressHUDModeIndeterminate;
+//    HUD.label.text = tipStr;
+//    HUD.userInteractionEnabled = NO;
+//
+//    //在window上显示就不让其点击
     window.userInteractionEnabled = NO;
+
+    HUD.mode = MBProgressHUDModeCustomView;
+    LoadingAnimationView *loadingView = [[LoadingAnimationView alloc] initWithFrame:CGRectMake(0, 0, 37, 37)];
+    HUD.customView = loadingView;
+    HUD.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;
+    HUD.bezelView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.9f];
     
     [HUD showAnimated:YES];
 }

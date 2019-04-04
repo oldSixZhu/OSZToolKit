@@ -30,7 +30,7 @@ static const char *UIButton_acceptEventTime     = "UIButton_acceptEventTime";
     objc_setAssociatedObject(self, UIButton_acceptEventTime, @(mm_acceptEventTime), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-+ (void)load{
++ (void)load {
     //获取这两个方法
     Method systemMethod = class_getInstanceMethod(self, @selector(sendAction:to:forEvent:));
     SEL sysSEL = @selector(sendAction:to:forEvent:);
@@ -53,7 +53,7 @@ static const char *UIButton_acceptEventTime     = "UIButton_acceptEventTime";
     
 }
 
-- (void)mm_sendAction:(SEL)action to:(id)target forEvent:(UIEvent *)event{
+- (void)mm_sendAction:(SEL)action to:(id)target forEvent:(UIEvent *)event {
     
     if (NSDate.date.timeIntervalSince1970 - self.mm_acceptEventTime < self.mm_acceptEventInterval) {
         return;

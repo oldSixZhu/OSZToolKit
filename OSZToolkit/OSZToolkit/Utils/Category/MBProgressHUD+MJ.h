@@ -44,6 +44,8 @@
  */
 + (void)showToastWithImgOnWindow:(NSString *)tipStr toastImg:(UIImage *)toastImg;
 + (void)showToastWithImgOnWindow:(NSString *)tipStr toastImg:(UIImage *)toastImg after:(NSTimeInterval)delay model:(BOOL)model;
+/// 黑色的背景，图片+文字
++ (void)showBlackToastWithString:(NSString *)tipStr andImage:(UIImage *)toastImg;
 
 /**
  *  在window上显示转圈的MBProgressHUD (不会自动消失,需要手动调用隐藏方法)

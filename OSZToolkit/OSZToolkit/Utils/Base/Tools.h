@@ -15,6 +15,37 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, DeviceType) {
+    unknown = 0,
+    simulator,
+    iPhone_1G,
+    iPhone_3G,
+    iPhone_3GS,
+    iPhone_4,
+    iPhone_4S,
+    iPhone_5,
+    iPhone_5C,
+    iPhone_5S,
+    iPhone_SE,
+    iPhone_6,
+    iPhone_6_P,
+    iPhone_6S,
+    iPhone_6S_P,
+    iPhone_7,
+    iPhone_7_P,
+    iPhone_8,
+    iPhone_8_P,
+    iPhone_X,
+};
+
+typedef NS_ENUM(NSInteger, BeginnerGuidePage) {
+    courseListGuidePage = 0,                                    //课程首页 - 待办课程
+    studentListGuidePage,                                       //学员列表 - 邀约
+    courseActionOneGuidePage,                                   //课程上课 - 结束课程
+    courseActionTwoGuidePage,                                   //课程上课 - 切换动作
+    courseActionThreeGuidePage,                                 //课程上课 - 间歇计时器
+};
+
 typedef void(^cleanCacheBlock)(void);
 
 @interface Tools : NSObject
@@ -273,5 +304,27 @@ typedef void(^cleanCacheBlock)(void);
 #pragma mark - 将指定的控制器标记为待刷新状态
 /** 将指定的控制器标记为待刷新状态 */
 + (void)remarkRefresh:(NSString *)aClassName nav:(UINavigationController *)nav;
+
+#pragma mark - 加密、解密
+/** DES加密 */
++ (NSString *)desStringFromText:(NSString *)text key:(NSString *)key;
+/** DES解密 */
++ (NSString *)encryptDESStringFromText:(NSString *)text key:(NSString *)key;
+
+#pragma mark - 设备型号
+/** 设备型号 */
++ (DeviceType)deviceType;
+
+#pragma mark - 新手引导图
+/** 新手引导图 */
++ (UIImage *)imageForPage:(BeginnerGuidePage)page;
+
+#pragma mark - 保存日志文件
+/** 保存日志文件 */
++ (void)redirectNSLogToDocumentFolder;
+
+#pragma mark - 产生随机字符串
+/** 产生随机字符串 */
++ (NSString *)generateString:(NSInteger)length;
 
 @end
